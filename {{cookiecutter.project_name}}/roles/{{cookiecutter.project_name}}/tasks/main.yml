@@ -1,0 +1,4 @@
+---
+# tasks for {{ cookiecutter.project_name }}
+
+- debug: var=welcome_message
