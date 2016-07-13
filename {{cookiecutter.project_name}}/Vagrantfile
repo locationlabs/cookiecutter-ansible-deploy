@@ -1,0 +1,49 @@
+# {{ cookiecutter.project_name }} vagrant configuration
+
+nodes = [
+  { :hostname => '{{ cookiecutter.project_name|replace('_', '-') }}1', :ip => '{{ cookiecutter.private_network }}', :box => 'bento/ubuntu-14.04', :ram => {{ cookiecutter.memory }}, :cpus => {{ cookiecutter.cpus }}},
+]
+
+Vagrant.configure("2") do |config|
+  config.ssh.insert_key = false
+
+  if Vagrant.has_plugin?('vagrant-cachier')
+    config.cache.enable :apt
+  else
+    printf("** Install vagrant-cachier plugin to speedup deploy: `vagrant plugin install vagrant-cachier`.**\n")
+  end
+
+  if Vagrant.has_plugin?('vagrant-hostmanager')
+    config.hostmanager.enabled = true
+    config.hostmanager.manage_host = true
+    config.hostmanager.include_offline = true
+  else
+    raise "** Install vagrant-hostmanager plugin to continue: `vagrant plugin install vagrant-hostmanager`.**\n"
+  end
+
+  nodes.each do |node|
+    config.vm.define node[:hostname] do |node_config|
+      node_config.vm.box = node[:box]
+      node_config.vm.host_name = node[:hostname] + '.vagrant'
+      node_config.vm.network :private_network, ip: node[:ip]
+      node_config.vm.provision "shell", inline: $provision_shell_script
+      node_config.vm.provider :virtualbox do |vb|
+        vb.memory = node[:ram]
+        vb.cpus = node[:cpus]
+        vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+        vb.customize ['guestproperty', 'set', :id, '/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold', 10000]
+      end
+      node_config.vm.provider "vmware_fusion" do |vb|
+        vb.vmx["memsize"] = node[:ram]
+        vb.vmx["numvcpus"] = node[:cpus]
+      end
+    end
+  end
+end
+
+$provision_shell_script = <<SCRIPT
+apt-get -qy update
+echo "Setting timezone..."
+echo "America/Los_Angeles" | sudo tee /etc/timezone
+sudo dpkg-reconfigure --frontend noninteractive tzdata
+SCRIPT

@@ -1,0 +1,7 @@
+# This file specifies which ansible galaxy roles you'll be pulling in.
+#
+# e.g.
+# - src: https://github.com/locationlabs/ansible-role_ubuntu-base.git
+#   version: "1.0"
+#   scm: git
+#   name: ubuntu-base

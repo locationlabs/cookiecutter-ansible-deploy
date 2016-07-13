@@ -1,0 +1,7 @@
+{
+  "project_name": "ansible_deploy",
+  "short_desc": "Ansible deploy for The Question",
+  "private_network": "172.16.1.2",
+  "memory": "256",
+  "cpus": "1"
+}

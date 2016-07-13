@@ -1,0 +1,6 @@
+[vagrant]
+{{ cookiecutter.project_name|replace('_', '-') }}1.vagrant
+
+[vagrant:vars]
+ansible_ssh_users=vagrant
+ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key

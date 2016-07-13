@@ -1,0 +1,21 @@
+---
+- name: Update apt cache
+  hosts: all
+  tasks:
+    - apt: update_cache=yes cache_valid_time="{{ 7 * 86400 }}"
+  tags:
+    - always
+
+- name: Prepare the host OS
+  hosts: all
+  roles:
+    - { role: foo, tags: ['foo'] }
+  tags:
+    - baseline
+
+- name: Deploy {{ cookiecutter.project_name }}
+  hosts: bar
+  roles:
+    - { role: {{ cookiecutter.project_name }}, tags: ['baz'] }
+  tags:
+    - {{ cookiecutter.project_name }}
