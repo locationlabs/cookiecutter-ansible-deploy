@@ -5,7 +5,7 @@ required_plugins = [
 ]
 
 nodes = [
-  { :hostname => '{{ cookiecutter.project_name|replace('_', '-') }}1', :ip => '{{ cookiecutter.private_network }}', :box => 'bento/ubuntu-14.04', :ram => {{ cookiecutter.memory }}, :cpus => {{ cookiecutter.cpus }}},
+  { :hostname => '{{ cookiecutter.project_name|replace('_', '-') }}1', :ip => '{{ cookiecutter.private_network }}', :box => 'bento/ubuntu-16.04', :ram => {{ cookiecutter.memory }}, :cpus => {{ cookiecutter.cpus }}},
 ]
 
 Vagrant.configure("2") do |config|
@@ -32,7 +32,7 @@ Vagrant.configure("2") do |config|
   config.hostmanager.ip_resolver = proc do |vm, resolving_vm|
     if cached_addresses[vm.name].nil?
       if hostname = (vm.ssh_info && vm.ssh_info[:host])
-        vm.communicate.execute("ip -f inet -o addr show eth1 | awk '{print $4}' | cut -d '/' -f 1") do |type, contents|
+        vm.communicate.execute("ip -f inet -o addr show ens33 | awk '{print $4}' | cut -d '/' -f 1") do |type, contents|
           cached_addresses[vm.name] = contents.chomp
         end
       end

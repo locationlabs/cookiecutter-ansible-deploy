@@ -26,6 +26,8 @@ that may need to be set for other roles, or variables that are used from other r
 Including an example of how to use your role (for instance, with variables passed in as parameters)
 is always nice for users too:
 
-    - hosts: servers
-      roles:
-         - { role: {{ cookiecutter.project_name }}, x: 42 }
+```yaml
+- hosts: servers
+  roles:
+     - { role: {{ cookiecutter.project_name }}, x: 42 }
+```
